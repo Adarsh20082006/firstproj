@@ -1,0 +1,21 @@
+
+   <div class="nav-container">
+     <a href="/">Home</a>
+    <a href="{% url 'create-room' %}"> Create</a>
+
+    <form action="{% url 'home' %}" method="GET">
+        <input type="text" name="q"  placeholder="Search Rooms..."/>
+    </form>
+    {%if request.user.is_authenticated %}
+    <h3><a href="{% url 'logout' %}">Logout</a></h3>
+    {%else%}
+    <h3><a href="{% url 'login' %}">Login</a></h3>
+    {% endif %}
+   </div>
+    <style>
+        .nav-container{
+            display:flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+    </style>
