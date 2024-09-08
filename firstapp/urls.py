@@ -1,6 +1,6 @@
-from django.urls import path
+from django.urls import path # type: ignore
 from . import views
-from django.http import HttpResponse
+from django.http import HttpResponse # type: ignore
 
 urlpatterns=[
     path('', views.home, name='home'),

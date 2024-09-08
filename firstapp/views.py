@@ -1,13 +1,13 @@
-from django.shortcuts import render,redirect
-from .models import Room,Topic,Message
-from .forms import RoomForm,UserForm
-from django.db.models import Q
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.contrib.auth import login,logout,authenticate
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render,redirect # type: ignore
+from .models import Room,Topic,Message # type: ignore
+from .forms import RoomForm,UserForm # type: ignore
+from django.db.models import Q # type: ignore
+from django.contrib.auth.models import User # type: ignore
+from django.contrib import messages # type: ignore
+from django.contrib.auth import login,logout,authenticate # type: ignore
+from django.contrib.auth.decorators import login_required # type: ignore
+from django.http import HttpResponse # type: ignore
+from django.contrib.auth.forms import UserCreationForm # type: ignore
 # Create your views here.
 # roooms=[
 #     {'id':1 ,'name':'Python page',},
