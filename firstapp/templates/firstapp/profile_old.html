@@ -1,0 +1,21 @@
+{% extends 'main.html'%}
+{% block content %}
+<style>
+    .profile-container{
+        display:grid;
+        grid-template-columns: 1fr 3fr 1fr;
+        column-gap: 5px;
+    }
+</style>
+<div class="profile-container">
+    <div>
+        {% include 'firstapp/topics_component.html' %}
+    </div>
+    <div>
+        {% include 'firstapp/feed_component.html' %}
+    </div>
+    <div>
+        {% include 'firstapp/activity_component.html' %}
+    </div>
+</div>
+{% endblock content %}

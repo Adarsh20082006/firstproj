@@ -26,6 +26,7 @@ def home(request):
     return render(request,'firstapp/home.html',{'rooms':roooms,'topics':topic,'count':total,'comments':comment})
 
 def rooms(request,pk):
+   
     page=Room.objects.get(id=pk)
     msgs=page.message_set.all().order_by('-created')
     participants=page.participants.all()
@@ -43,18 +44,26 @@ def rooms(request,pk):
 
 @login_required(login_url='login')
 def createRoom(request):
-    form=RoomForm()
+    topics=Topic.objects.all()
+    form=RoomForm() 
     if request.method=='POST':
-        form=RoomForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home') 
-
-    context={'form':form}
+       
+       topic=request.POST.get('topic')
+       topic,created=Topic.objects.get_or_create(name=topic)
+       room=Room.objects.create(
+           host=request.user,
+           topic=topic,
+           name=request.POST.get('name') ,
+           description=request.POST.get('description'),
+        )
+       room.save()
+       return redirect('home') 
+    context={'form':form,'topics':topics}
     return render(request,'firstapp/room_form.html',context)
 
 @login_required(login_url='login')
 def updateRoom(request,pk):
+   topics=Topic.objects.all()
    room= Room.objects.get(id=pk)
    form=RoomForm(instance=room)
    if request.user!=room.host:
@@ -62,12 +71,15 @@ def updateRoom(request,pk):
        
 
    if request.method=='POST':
-       form=RoomForm(request.POST,instance=room)
-       if form.is_valid():
-           form.save()
-           return redirect('home') 
+       topic=request.POST.get('topic')
+       topic,created=Topic.objects.get_or_create(name=topic)
+       room.name=request.POST.get('name')
+       room.name=topic
+       room.description=request.POST.get('description')
+       room.save()
+       return redirect('room',pk=room.id) 
        
-   context={'form':form}
+   context={'form':form,'topics':topics,'room':room}
    return render(request,'firstapp/room_form.html',context)
 
 @login_required(login_url='login')
@@ -107,25 +119,52 @@ def logoutUser(request):
     return redirect('home')
 
 def registerUser(request):
-    form=UserCreationForm()
+    # form=UserCreationForm()
     if request.method == 'POST':
-        form=UserCreationForm(request.POST)
-        if form.is_valid():
-            user=form.save(commit=False)
-            user.username=user.username
-            user.save()
-            login(request,user)
-            return redirect('home')
+        fName=request.POST.get('fullname')
+        uName=request.POST.get('username')
+        pWord=request.POST.get('password')
+        cWord=request.POST.get('confirm_password')
+        # form=UserCreationForm(request.POST)
+        if pWord == cWord:
+             try:
+               user=User.objects.get(username=uName)
+               messages.error(request,"User already exists")
+             except:
+                # user=authenticate(request,username=uName,password=pWord)
+                user=User.objects.create(
+                    # fullname=fName,
+                    username=uName,
+                    password=pWord
+                )
+             
+                # user=user.save(commit=False)
+                # user.username=user.username
+                user.save()
+                user=authenticate(request,username=uName,password=pWord)
+                login(request,user)
+                return redirect('home')
         else:
             messages.error(request,'Something went wrong')
     
-    return render(request, 'firstapp/login_register.html',{'form':form})
+    return render(request, 'firstapp/signup.html')
 
 @login_required(login_url='login')
 def deleteMsg(request,pk):
     msg=Message.objects.get(id=pk)
-    if request.user==msg.user:
-        msg.delete()
-        return redirect('home')
-   
-    return render(request,'firstapp/delete.html',{'obj':msg})
+    user=msg.user
+    if request.user==user:
+        # if request.method=='POST':
+            msg.delete()
+            return redirect('room',pk=msg.room.id)
+    # return render(request,'firstapp/delete.html',{'obj':msg})
+        
+
+def profile(request,pk):
+    user=User.objects.get(id=pk)
+    rooms=user.room_set.all()
+    comments=user.message_set.all()
+    topic=Topic.objects.all()
+
+    context={'rooms':rooms,'comments':comments,'topics':topic,'custom':user}
+    return render(request, 'firstapp/profile.html',context)
