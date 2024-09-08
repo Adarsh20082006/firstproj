@@ -12,5 +12,8 @@ urlpatterns=[
     path('logout/',views.logoutUser,name='logout'),
     path('register/',views.registerUser,name='register'),
     path('delete-msg/<str:pk>/',views.deleteMsg,name="delete-msg"),
-    path('profile/<str:pk>/',views.profile, name='user-profile')
+    path('profile/<str:pk>/',views.profile, name='user-profile'),
+    path('edit-user/',views.editUser,name='edit-user'),
+    path('topics/',views.topicsPage,name='topics'),
+    path('activity/',views.activityPage,name='activity')
 ]
