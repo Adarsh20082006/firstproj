@@ -20,7 +20,7 @@ from django.contrib.auth.forms import UserCreationForm # type: ignore
 def home(request):
     q=request.GET.get('q') if request.GET.get('q')!=None else ''
     roooms=Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q))
-    topic=Topic.objects.all()[0:6]
+    topic=Topic.objects.all()[0:4]
     total=roooms.count()
     comment=Message.objects.filter(Q(room__topic__name__contains=q))
     return render(request,'firstapp/home.html',{'rooms':roooms,'topics':topic,'count':total,'comments':comment})
